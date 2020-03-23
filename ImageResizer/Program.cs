@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ImageResizer.Common;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -14,16 +15,23 @@ namespace ImageResizer
             string sourcePath = Path.Combine(Environment.CurrentDirectory, "images");
             string destinationPath = Path.Combine(Environment.CurrentDirectory, "output"); ;
 
-            ImageProcess imageProcess = new ImageProcess();
-
-            imageProcess.Clean(destinationPath);
+            float oldElapsedMilliseconds = 3240;
+            float effective = 0;
 
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            imageProcess.ResizeImages(sourcePath, destinationPath, 2.0);
+            // AsyncImageProcess.DoImageProcessDefault(sourcePath, destinationPath).Wait(); 3132ms
+            // AsyncImageProcess.DoImageProcess(sourcePath, destinationPath).Wait(); 2232ms
+            AsyncImageProcess.DoImageProcessV2(sourcePath, destinationPath).Wait(); // 2185ms
             sw.Stop();
 
+            effective = (oldElapsedMilliseconds - float.Parse(sw.ElapsedMilliseconds.ToString())) / oldElapsedMilliseconds * 100;
+
             Console.WriteLine($"花費時間: {sw.ElapsedMilliseconds} ms");
+            Console.WriteLine($"提升:{ effective }" + "%");
+            Console.ReadKey();
         }
+
+
     }
 }
