@@ -105,7 +105,7 @@ namespace ImageResizer
         /// <param name="sourcePath">圖片來源目錄路徑</param>
         /// <param name="destPath">產生圖片目的目錄路徑</param>
         /// <param name="scale">縮放比例</param>
-        public async Task ResizeImages2(string sourcePath, string destPath, double scale)
+        public Task ResizeImages2(string sourcePath, string destPath, double scale,CancellationToken token)
         {
             var allFiles = FindImages(sourcePath);
             List<Task> result = new List<Task>();
@@ -114,6 +114,11 @@ namespace ImageResizer
                 Console.WriteLine("【" + String.Format("{0:D2}", Thread.CurrentThread.ManagedThreadId) + "】" + "開始:" + filePath);
                 result.Add(Task.Run(() =>
                 {
+                    if (token.IsCancellationRequested == true)
+                    {
+                        Console.WriteLine(filePath+"作業中斷");
+                        return;
+                    }
                     Image imgPhoto = Image.FromFile(filePath);
                     string imgName = Path.GetFileNameWithoutExtension(filePath);
 
@@ -131,10 +136,21 @@ namespace ImageResizer
                     processedImage.Save(destFile, ImageFormat.Jpeg);
                     Console.WriteLine("【" + String.Format("{0:D2}", Thread.CurrentThread.ManagedThreadId) + "】" + "結束:" + filePath);
                 }));
+
             }
-            await Task.WhenAll(result);
+            return Task.WhenAll(result);
         }
 
+        /// <summary>
+        /// 進行圖片的縮放作業，回傳Task
+        /// </summary>
+        /// <param name="sourcePath">圖片來源目錄路徑</param>
+        /// <param name="destPath">產生圖片目的目錄路徑</param>
+        /// <param name="scale">縮放比例</param>
+        public Task ResizeImages2(string sourcePath, string destPath, double scale)
+        {
+            return ResizeImages2(sourcePath, destPath,scale, CancellationToken.None);
+        }
         /// <summary>
         /// 找出指定目錄下的圖片
         /// </summary>

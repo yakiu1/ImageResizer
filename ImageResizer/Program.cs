@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ImageResizer
@@ -12,6 +13,8 @@ namespace ImageResizer
     {
         static void Main(string[] args)
         {
+
+
             string sourcePath = Path.Combine(Environment.CurrentDirectory, "images");
             string destinationPath = Path.Combine(Environment.CurrentDirectory, "output"); ;
 
@@ -22,7 +25,7 @@ namespace ImageResizer
             sw.Start();
             // AsyncImageProcess.DoImageProcessDefault(sourcePath, destinationPath).Wait(); 3132ms
             // AsyncImageProcess.DoImageProcess(sourcePath, destinationPath).Wait(); 2232ms
-            AsyncImageProcess.DoImageProcessV2(sourcePath, destinationPath).Wait(); // 2185ms
+            AsyncImageProcess.DoImageProcessV2Async(sourcePath, destinationPath).Wait(); // 2185ms
             sw.Stop();
 
             effective = (oldElapsedMilliseconds - float.Parse(sw.ElapsedMilliseconds.ToString())) / oldElapsedMilliseconds * 100;

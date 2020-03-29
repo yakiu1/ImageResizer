@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ImageResizer.Common
@@ -26,11 +27,23 @@ namespace ImageResizer.Common
         /// </summary>
         /// <param name="sourcePath">來源路徑</param>
         /// <param name="destinationPath">目標路徑</param>
-        public static async Task DoImageProcessV2(string sourcePath, string destinationPath)
+        public static Task DoImageProcessV2Async(string sourcePath, string destinationPath)
         {
+            CancellationTokenSource cts = new CancellationTokenSource();
+            #region 等候使用者輸入 取消 B 按鍵
+            ThreadPool.QueueUserWorkItem(x =>
+            {
+                ConsoleKeyInfo key = Console.ReadKey();
+                if (key.Key == ConsoleKey.B)
+                {
+                    cts.Cancel();
+                }
+            });
+            #endregion
+
             ImageProcess imageProcess = new ImageProcess();
             imageProcess.Clean(destinationPath);
-            await imageProcess.ResizeImages2(sourcePath, destinationPath, 2.0);
+            return imageProcess.ResizeImages2(sourcePath, destinationPath, 2.0, cts.Token);
         }
 
         /// <summary>
