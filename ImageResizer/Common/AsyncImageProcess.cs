@@ -29,6 +29,7 @@ namespace ImageResizer.Common
         /// <param name="destinationPath">目標路徑</param>
         public static Task DoImageProcessV2Async(string sourcePath, string destinationPath)
         {
+            ImageProcess imageProcess = new ImageProcess();
             CancellationTokenSource cts = new CancellationTokenSource();
             #region 等候使用者輸入 取消 B 按鍵
             ThreadPool.QueueUserWorkItem(x =>
@@ -40,9 +41,6 @@ namespace ImageResizer.Common
                 }
             });
             #endregion
-
-            ImageProcess imageProcess = new ImageProcess();
-            imageProcess.Clean(destinationPath);
             return imageProcess.ResizeImages2(sourcePath, destinationPath, 2.0, cts.Token);
         }
 
