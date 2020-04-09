@@ -44,10 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\AsyncImageProcess.cs" />
-    <Compile Include="Lib\ImageProcess.cs" />
+    <Compile Include="Common\ImageProcess\ImageResizerProcess.cs" />
+    <Compile Include="Common\ImageProcess\ImageResizerProcessWithAsyn.cs" />
+    <Compile Include="Interface\IImageProcesser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\ImageService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
