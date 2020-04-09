@@ -16,17 +16,16 @@ namespace ImageResizer
     {
         static async Task Main(string[] args)
         {
+            // ImageService imageService = new ImageService(new ImageResizerProcess());
             ImageService imageService = new ImageService(new ImageResizerProcessWithAsyn());
 
             string sourcePath = Path.Combine(Environment.CurrentDirectory, "images");
             string destinationPath = Path.Combine(Environment.CurrentDirectory, "output"); ;
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            try {
+            try
+            {
                 imageService.DoImageProcess(sourcePath, destinationPath);
-                // AsyncImageProcess.DoImageProcessDefault(sourcePath, destinationPath).Wait(); 3132ms
-                // AsyncImageProcess.DoImageProcess(sourcePath, destinationPath).Wait(); 2232ms
-                // await AsyncImageProcess.DoImageProcessV2Async(sourcePath, destinationPath);
             }
             catch (OperationCanceledException)
             {
